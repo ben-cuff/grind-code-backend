@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-import express from "express";
-
-const prisma: PrismaClient = new PrismaClient();
+import * as express from "express";
+import { prisma } from "..";
 
 const router = express.Router();
 
@@ -14,16 +12,16 @@ router.get("/:userId", async (req, res) => {
         });
 
         if (!user) {
-            return res
-                .status(404)
-                .json({ error: "A user with that userId was not found" });
+            res.status(404).json({
+                error: "A user with that userId was not found",
+            });
         }
 
-        return res.status(200).json(user);
+        res.status(200).json(user);
     } catch (error) {
-        return res
-            .status(500)
-            .json({ error: "A unexpected server error occurred: " + error });
+        res.status(500).json({
+            error: "A unexpected server error occurred: " + error,
+        });
     }
 });
 
@@ -32,9 +30,7 @@ router.post("/", async (req, res) => {
         const { userId, email } = req.body;
 
         if (!userId || !email) {
-            return res
-                .status(400)
-                .json({ error: "userId and email are required" });
+            res.status(400).json({ error: "userId and email are required" });
         }
         let newAccount;
         try {
@@ -45,16 +41,16 @@ router.post("/", async (req, res) => {
                 },
             });
         } catch {
-            return res
-                .status(400)
-                .json({ error: "Account with email or already exists" });
+            res.status(400).json({
+                error: "Account with email or already exists",
+            });
         }
 
-        return res.status(201).json(newAccount);
+        res.status(201).json(newAccount);
     } catch (error) {
-        return res
-            .status(500)
-            .json({ error: "A unexpected server error occurred: " + error });
+        res.status(500).json({
+            error: "A unexpected server error occurred: " + error,
+        });
     }
 });
 
@@ -69,18 +65,14 @@ router.delete("/:userId", async (req, res) => {
                 },
             });
         } catch {
-            return res
-                .status(400)
-                .json({ error: "That account does not exist" });
+            res.status(400).json({ error: "That account does not exist" });
         }
 
-        return res
-            .status(200)
-            .json({ message: "Account successfully deleted" });
+        res.status(200).json({ message: "Account successfully deleted" });
     } catch (error) {
-        return res
-            .status(500)
-            .json({ error: "A unexpected server error occurred: " + error });
+        res.status(500).json({
+            error: "A unexpected server error occurred: " + error,
+        });
     }
 });
 

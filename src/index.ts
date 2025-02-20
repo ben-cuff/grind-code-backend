@@ -1,9 +1,12 @@
+import { PrismaClient } from "@prisma/client";
 import cors from "cors";
 import "dotenv/config";
 import express from "express";
 import accountsRouter from "./accounts";
 
 const port = process.env.PORT || 3000;
+
+const prisma = new PrismaClient();
 
 const app = express();
 
@@ -19,3 +22,5 @@ app.use("/accounts", accountsRouter);
 app.listen(port, () => {
     console.log(`App listening on port: ${port}`);
 });
+
+export { prisma };
