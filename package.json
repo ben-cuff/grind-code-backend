@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "type-check": "tsc",
-    "build": "rimraf dist && tsc --noEmit false && tsc-alias",
+    "build": "rimraf dist && tsc --noEmit false && tsc-alias && cp package.json dist/",
     "start": "node dist/index.js",
     "dev": "tsx watch src/index"
   },
