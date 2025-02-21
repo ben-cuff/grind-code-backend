@@ -1,5 +1,7 @@
 import express from "express";
 
+import idMessageRouter from "@/questions/[id]/index";
+
 const router = express.Router();
 
 import prisma from "@/db";
@@ -69,32 +71,6 @@ router.get("/random-question", async (_req, res) => {
     }
 });
 
-router.get("/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        if (!id) {
-            res.status(400).json({ error: "Missing id from path" });
-            return;
-        }
-
-        const user = await prisma.question.findUnique({
-            where: { id },
-        });
-
-        if (!user) {
-            res.status(404).json({ error: "User with that id does not exist" });
-            return;
-        }
-
-        res.status(200).json(user);
-    } catch (error) {
-        res.status(500).json({
-            error: "An unexpected server error occurred: " + error,
-        });
-    }
-});
-
 router.post("/:questionNumber", async (req, res) => {
     try {
         const { urlSolution, solutionRoute, urlQuestion, prompt, pattern } =
@@ -133,7 +109,7 @@ router.post("/:questionNumber", async (req, res) => {
                     pattern,
                 },
             });
-        } catch {
+        } catch (error) {
             res.status(409).json({
                 error: "A question with that questionNumber already exists",
             });
@@ -141,29 +117,6 @@ router.post("/:questionNumber", async (req, res) => {
         }
 
         res.status(201).json(newQuestion);
-    } catch (error) {
-        res.status(500).json({
-            error: "An unexpected server error occurred: " + error,
-        });
-    }
-});
-
-router.patch("/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-        const updateData = req.body;
-
-        if (!Object.keys(updateData).length) {
-            res.status(400).json({ error: "No data provided for update" });
-            return;
-        }
-
-        const updatedQuestion = await prisma.question.update({
-            where: { id },
-            data: updateData,
-        });
-
-        res.status(200).json(updatedQuestion);
     } catch (error) {
         res.status(500).json({
             error: "An unexpected server error occurred: " + error,
@@ -198,33 +151,6 @@ router.patch("/", async (req, res) => {
     }
 });
 
-router.delete("/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        if (!id) {
-            res.status(400).json({ error: "Missing id from path" });
-            return;
-        }
-        try {
-            await prisma.question.delete({
-                where: {
-                    id,
-                },
-            });
-        } catch {
-            res.status(400).json({ error: "That question does not exist" });
-            return;
-        }
-
-        res.status(200).json({ message: "Question successfully deleted" });
-    } catch (error) {
-        res.status(500).json({
-            error: "An unexpected server error occurred: " + error,
-        });
-    }
-});
-
 router.delete("/", async (req, res) => {
     try {
         const questionNumber = req.query.questionNumber;
@@ -239,11 +165,13 @@ router.delete("/", async (req, res) => {
                 },
             });
         } catch {
-            res.status(400).json({ error: "That question does not exist" });
+            res.status(404).json({ error: "That question does not exist" });
             return;
         }
 
-        res.status(200).json({ message: "Question successfully deleted" });
+        res.status(200).json({
+            message: "Question successfully deleted",
+        });
     } catch (error) {
         res.status(500).json({
             error: "An unexpected server error occurred: " + error,
@@ -251,25 +179,28 @@ router.delete("/", async (req, res) => {
     }
 });
 
-type AlgorithmPattern =
-    | "slidingWindow"
-    | "twoPointer"
-    | "fastSlowPointers"
-    | "binarySearch"
-    | "heapTopK"
-    | "bfs"
-    | "dfs"
-    | "bitwise"
-    | "backtracking"
-    | "dynamicProgramming1d"
-    | "dynamicProgramming2d"
-    | "greedy"
-    | "stack"
-    | "mergeIntervals"
-    | "math"
-    | "trees";
+router.delete("/delete-all", async (_req, res) => {
+    try {
+        let count;
+        try {
+            count = (await prisma.question.deleteMany()).count;
+        } catch {
+            res.status(404).json({ error: "No questions found" });
+        }
+        res.status(200).json({
+            message: "Questions successfully deleted",
+            count,
+        });
+    } catch (error) {
+        res.status(500).json({
+            error: "An unexpected server error occurred: " + error,
+        });
+    }
+});
 
-const allowedPatterns = new Set<AlgorithmPattern>([
+router.use("/", idMessageRouter);
+
+const algorithmPatterns = [
     "slidingWindow",
     "twoPointer",
     "fastSlowPointers",
@@ -286,7 +217,11 @@ const allowedPatterns = new Set<AlgorithmPattern>([
     "mergeIntervals",
     "math",
     "trees",
-]);
+];
+
+type AlgorithmPattern = (typeof algorithmPatterns)[number];
+
+const allowedPatterns = new Set<AlgorithmPattern>(algorithmPatterns);
 
 export type { AlgorithmPattern };
 

@@ -6,7 +6,7 @@
     "scripts": {
         "type-check": "tsc",
         "build": "prisma generate && tsc",
-        "dev": "tsx watch src/index",
+        "dev": "prisma generate && tsx watch src/index",
         "vercel-build": "prisma generate && tsc"
     },
     "author": "",
@@ -22,7 +22,7 @@
         "@types/cors": "^2.8.17",
         "@types/express": "^5.0.0",
         "@types/node": "^22.13.4",
-        "prisma": "^5.22.0",
+        "prisma": "^6.4.1",
         "rimraf": "^6.0.1",
         "ts-node": "^10.9.2",
         "tsc-alias": "^1.8.10",
