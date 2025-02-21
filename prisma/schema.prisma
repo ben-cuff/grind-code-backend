@@ -17,6 +17,7 @@ model account {
 model question {
   id             String          @id @default(uuid())
   questionNumber Int             @unique
+  name           String
   urlSolution    String
   solutionRoute  String
   urlQuestion    String

@@ -73,8 +73,14 @@ router.get("/random-question", async (_req, res) => {
 
 router.post("/:questionNumber", async (req, res) => {
     try {
-        const { urlSolution, solutionRoute, urlQuestion, prompt, pattern } =
-            req.body;
+        const {
+            urlSolution,
+            solutionRoute,
+            urlQuestion,
+            prompt,
+            pattern,
+            name,
+        } = req.body;
         const { questionNumber } = req.params;
 
         if (
@@ -82,7 +88,8 @@ router.post("/:questionNumber", async (req, res) => {
             !solutionRoute ||
             !urlQuestion ||
             !prompt ||
-            !pattern
+            !pattern ||
+            !name
         ) {
             res.status(400).json({ error: "Missing attributes in body" });
             return;
@@ -107,6 +114,7 @@ router.post("/:questionNumber", async (req, res) => {
                     urlQuestion,
                     prompt,
                     pattern,
+                    name,
                 },
             });
         } catch (error) {
