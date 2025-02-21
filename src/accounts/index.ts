@@ -1,4 +1,4 @@
-import * as express from "express";
+import express from "express";
 import { prisma } from "..";
 
 const router = express.Router();
@@ -41,7 +41,7 @@ router.post("/", async (req, res) => {
                 },
             });
         } catch {
-            res.status(400).json({
+            res.status(409).json({
                 error: "Account with email or already exists",
             });
         }

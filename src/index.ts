@@ -3,6 +3,7 @@ import "dotenv/config";
 import express from "express";
 import accountsRouter from "./accounts";
 import prisma from "./db";
+import questionsRouter from "./questions";
 
 const app = express();
 
@@ -15,7 +16,8 @@ app.get("/", (_req, res) => {
 
 app.use("/accounts", accountsRouter);
 
-// Only listen directly if not running in serverless environment
+app.use("/questions", questionsRouter);
+
 if (process.env.NODE_ENV !== "production") {
     const port = process.env.PORT || 3000;
     app.listen(port, () => {

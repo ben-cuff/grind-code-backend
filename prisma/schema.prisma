@@ -13,3 +13,14 @@ model account {
   updatedAt DateTime @updatedAt
   email     String   @unique
 }
+
+model question {
+  id             String   @id @default(uuid())
+  questionNumber Int      @unique
+  urlSolution    String
+  solutionRoute  String
+  urlQuestion    String
+  prompt         String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
