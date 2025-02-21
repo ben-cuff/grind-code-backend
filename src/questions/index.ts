@@ -122,4 +122,48 @@ router.post("/:questionNumber", async (req, res) => {
     }
 });
 
+router.patch("/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updateData = req.body;
+
+        if (!Object.keys(updateData).length) {
+            res.status(400).json({ error: "No data provided for update" });
+        }
+
+        const updatedQuestion = await prisma.question.update({
+            where: { id },
+            data: updateData,
+        });
+
+        res.status(200).json(updatedQuestion);
+    } catch (error) {
+        res.status(500).json({
+            error: "An unexpect server occurred: " + error,
+        });
+    }
+});
+
+router.patch("/:questionNumber", async (req, res) => {
+    try {
+        const { questionNumber } = req.params;
+        const updateData = req.body;
+
+        if (!Object.keys(updateData).length) {
+            res.status(400).json({ error: "No data provided for update" });
+        }
+
+        const updatedQuestion = await prisma.question.update({
+            where: { questionNumber: Number(questionNumber) },
+            data: updateData,
+        });
+
+        res.status(200).json(updatedQuestion);
+    } catch (error) {
+        res.status(500).json({
+            error: "An unexpect server occurred: " + error,
+        });
+    }
+});
+
 export default router;
