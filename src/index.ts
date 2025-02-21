@@ -1,12 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import cors from "cors";
 import "dotenv/config";
 import express from "express";
 import accountsRouter from "./accounts";
-
-const port = process.env.PORT || 3000;
-
-const prisma = new PrismaClient();
+import prisma from "./db";
 
 const app = express();
 
@@ -19,8 +15,13 @@ app.get("/", (_req, res) => {
 
 app.use("/accounts", accountsRouter);
 
-app.listen(port, () => {
-    console.log(`App listening on port: ${port}`);
-});
+// Only listen directly if not running in serverless environment
+if (process.env.NODE_ENV !== "production") {
+    const port = process.env.PORT || 3000;
+    app.listen(port, () => {
+        console.log(`App listening on port: ${port}`);
+    });
+}
 
+export default app;
 export { prisma };
