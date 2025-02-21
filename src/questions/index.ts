@@ -26,6 +26,12 @@ router.get("/:questionNumber", async (req, res) => {
     try {
         const { questionNumber } = req.params;
 
+        if (!questionNumber) {
+            res.status(400).json({
+                error: "Missing questionNumber from path",
+            });
+        }
+
         const user = await prisma.question.findUnique({
             where: { questionNumber: Number(questionNumber) },
         });
@@ -47,6 +53,10 @@ router.get("/:questionNumber", async (req, res) => {
 router.get("/:id", async (req, res) => {
     try {
         const { id } = req.params;
+
+        if (!id) {
+            res.status(400).json({ error: "Missing id from path" });
+        }
 
         const user = await prisma.question.findUnique({
             where: { id },
@@ -159,6 +169,56 @@ router.patch("/:questionNumber", async (req, res) => {
         });
 
         res.status(200).json(updatedQuestion);
+    } catch (error) {
+        res.status(500).json({
+            error: "An unexpect server occurred: " + error,
+        });
+    }
+});
+
+router.delete("/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!id) {
+            res.status(400).json({ error: "Missing id from path" });
+        }
+        try {
+            await prisma.question.delete({
+                where: {
+                    id,
+                },
+            });
+        } catch {
+            res.status(400).json({ error: "That account does not exist" });
+        }
+
+        res.status(200).json({ message: "Account successfully deleted" });
+    } catch (error) {
+        res.status(500).json({
+            error: "An unexpect server occurred: " + error,
+        });
+    }
+});
+
+router.delete("/:questionNumber", async (req, res) => {
+    try {
+        const { questionNumber } = req.params;
+
+        if (!questionNumber) {
+            res.status(400).json({ error: "Missing id from path" });
+        }
+        try {
+            await prisma.question.delete({
+                where: {
+                    questionNumber: Number(questionNumber),
+                },
+            });
+        } catch {
+            res.status(400).json({ error: "That account does not exist" });
+        }
+
+        res.status(200).json({ message: "Account successfully deleted" });
     } catch (error) {
         res.status(500).json({
             error: "An unexpect server occurred: " + error,

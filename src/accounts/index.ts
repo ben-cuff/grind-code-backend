@@ -59,7 +59,7 @@ router.delete("/:userId", async (req, res) => {
         const { userId } = req.params;
 
         try {
-            const user = await prisma.account.delete({
+            await prisma.account.delete({
                 where: {
                     id: userId,
                 },
