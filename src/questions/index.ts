@@ -206,7 +206,7 @@ router.delete("/:questionNumber", async (req, res) => {
         const { questionNumber } = req.params;
 
         if (!questionNumber) {
-            res.status(400).json({ error: "Missing id from path" });
+            res.status(400).json({ error: "Missing questionNumber from path" });
         }
         try {
             await prisma.question.delete({
