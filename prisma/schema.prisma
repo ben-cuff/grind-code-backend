@@ -15,12 +15,32 @@ model account {
 }
 
 model question {
-  id             String   @id @default(uuid())
-  questionNumber Int      @unique
+  id             String          @id @default(uuid())
+  questionNumber Int             @unique
   urlSolution    String
   solutionRoute  String
   urlQuestion    String
+  pattern        questionPattern
   prompt         String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+enum questionPattern {
+  slidingWindow
+  twoPointer
+  fastSlowPointers
+  binarySearch
+  heapTopK
+  bfs
+  dfs
+  bitwise
+  backtracking
+  dynamicProgramming1d
+  dynamicProgramming2d
+  greedy
+  stack
+  mergeIntervals
+  math
+  trees
 }
