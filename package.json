@@ -5,9 +5,9 @@
     "main": "src/index.ts",
     "scripts": {
         "type-check": "tsc",
-        "build": "prisma generate & tsc",
+        "build": "prisma generate && tsc",
         "dev": "tsx watch src/index",
-        "vercel-build": "prisma generate & tsc"
+        "vercel-build": "prisma generate && tsc"
     },
     "author": "",
     "license": "ISC",
