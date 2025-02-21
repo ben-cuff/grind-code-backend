@@ -4,7 +4,47 @@ const router = express.Router();
 
 import prisma from "@/db";
 
-router.get("/", async (_req, res) => {
+router.get("/", async (req, res) => {
+    if (req.query.questionNumber) {
+        const questionNumber = req.query.questionNumber;
+        if (!questionNumber) {
+            res.status(400).json({
+                error: "Missing questionNumber in query",
+            });
+        }
+        try {
+            const question = await prisma.question.findUnique({
+                where: { questionNumber: Number(questionNumber) },
+            });
+            if (!question) {
+                res.status(404).json({
+                    error: "Question with that questionNumber does not exist",
+                });
+            }
+            res.status(200).json(question);
+        } catch (error) {
+            res.status(500).json({
+                error: "An unexpected server error occurred: " + error,
+            });
+        }
+    } else {
+        try {
+            const questions = await prisma.question.findMany();
+            if (!questions) {
+                res.status(404).json({
+                    error: "No questions found",
+                });
+            }
+            res.status(200).json(questions);
+        } catch (error) {
+            res.status(500).json({
+                error: "An unexpected server error occurred: " + error,
+            });
+        }
+    }
+});
+
+router.get("/random-question", async (_req, res) => {
     try {
         const questions = await prisma.question.findMany();
 
@@ -14,38 +54,13 @@ router.get("/", async (_req, res) => {
             });
         }
 
-        res.status(200).json(questions);
+        const randomIndex = Math.floor(Math.random() * questions.length);
+        const randomQuestion = questions[randomIndex];
+
+        res.status(200).json(randomQuestion);
     } catch (error) {
         res.status(500).json({
             error: "An unexpected server error occurred: " + error,
-        });
-    }
-});
-
-router.get("/:questionNumber", async (req, res) => {
-    try {
-        const { questionNumber } = req.params;
-
-        if (!questionNumber) {
-            res.status(400).json({
-                error: "Missing questionNumber from path",
-            });
-        }
-
-        const user = await prisma.question.findUnique({
-            where: { questionNumber: Number(questionNumber) },
-        });
-
-        if (!user) {
-            res.status(404).json({
-                error: "User with that questionNumber does not exist",
-            });
-        }
-
-        res.status(200).json(user);
-    } catch (error) {
-        res.status(500).json({
-            error: "An unexpected server occurred: " + error,
         });
     }
 });
@@ -69,28 +84,7 @@ router.get("/:id", async (req, res) => {
         res.status(200).json(user);
     } catch (error) {
         res.status(500).json({
-            error: "An unexpected server occurred: " + error,
-        });
-    }
-});
-
-router.get("/random-question", async (req, res) => {
-    try {
-        const questions = await prisma.question.findMany();
-
-        if (!questions) {
-            res.status(404).json({
-                error: "No questions found",
-            });
-        }
-
-        const randomIndex = Math.floor(Math.random() * questions.length);
-        const randomQuestion = questions[randomIndex];
-
-        res.status(200).json(randomQuestion);
-    } catch (error) {
-        res.status(500).json({
-            error: "An unexpected server occurred: " + error,
+            error: "An unexpected server error occurred: " + error,
         });
     }
 });
@@ -127,7 +121,7 @@ router.post("/:questionNumber", async (req, res) => {
         res.status(201).json(newQuestion);
     } catch (error) {
         res.status(500).json({
-            error: "An unexpected server occurred: " + error,
+            error: "An unexpected server error occurred: " + error,
         });
     }
 });
@@ -149,16 +143,19 @@ router.patch("/:id", async (req, res) => {
         res.status(200).json(updatedQuestion);
     } catch (error) {
         res.status(500).json({
-            error: "An unexpected server occurred: " + error,
+            error: "An unexpected server error occurred: " + error,
         });
     }
 });
 
-router.patch("/:questionNumber", async (req, res) => {
+router.patch("/", async (req, res) => {
     try {
-        const { questionNumber } = req.params;
+        const questionNumber = req.query.questionNumber;
         const updateData = req.body;
 
+        if (!questionNumber) {
+            res.status(400).json({ error: "Missing questionNumber in query" });
+        }
         if (!Object.keys(updateData).length) {
             res.status(400).json({ error: "No data provided for update" });
         }
@@ -171,7 +168,7 @@ router.patch("/:questionNumber", async (req, res) => {
         res.status(200).json(updatedQuestion);
     } catch (error) {
         res.status(500).json({
-            error: "An unexpected server occurred: " + error,
+            error: "An unexpected server error occurred: " + error,
         });
     }
 });
@@ -196,17 +193,16 @@ router.delete("/:id", async (req, res) => {
         res.status(200).json({ message: "Question successfully deleted" });
     } catch (error) {
         res.status(500).json({
-            error: "An unexpected server occurred: " + error,
+            error: "An unexpected server error occurred: " + error,
         });
     }
 });
 
-router.delete("/:questionNumber", async (req, res) => {
+router.delete("/", async (req, res) => {
     try {
-        const { questionNumber } = req.params;
-
+        const questionNumber = req.query.questionNumber;
         if (!questionNumber) {
-            res.status(400).json({ error: "Missing questionNumber from path" });
+            res.status(400).json({ error: "Missing questionNumber in query" });
         }
         try {
             await prisma.question.delete({
@@ -221,7 +217,7 @@ router.delete("/:questionNumber", async (req, res) => {
         res.status(200).json({ message: "Question successfully deleted" });
     } catch (error) {
         res.status(500).json({
-            error: "An unexpected server occurred: " + error,
+            error: "An unexpected server error occurred: " + error,
         });
     }
 });
