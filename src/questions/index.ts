@@ -45,7 +45,7 @@ router.get("/:questionNumber", async (req, res) => {
         res.status(200).json(user);
     } catch (error) {
         res.status(500).json({
-            error: "An unexpect server occurred: " + error,
+            error: "An unexpected server occurred: " + error,
         });
     }
 });
@@ -69,7 +69,7 @@ router.get("/:id", async (req, res) => {
         res.status(200).json(user);
     } catch (error) {
         res.status(500).json({
-            error: "An unexpect server occurred: " + error,
+            error: "An unexpected server occurred: " + error,
         });
     }
 });
@@ -90,7 +90,7 @@ router.get("/random-question", async (req, res) => {
         res.status(200).json(randomQuestion);
     } catch (error) {
         res.status(500).json({
-            error: "An unexpect server occurred: " + error,
+            error: "An unexpected server occurred: " + error,
         });
     }
 });
@@ -127,7 +127,7 @@ router.post("/:questionNumber", async (req, res) => {
         res.status(201).json(newQuestion);
     } catch (error) {
         res.status(500).json({
-            error: "An unexpect server occurred: " + error,
+            error: "An unexpected server occurred: " + error,
         });
     }
 });
@@ -149,7 +149,7 @@ router.patch("/:id", async (req, res) => {
         res.status(200).json(updatedQuestion);
     } catch (error) {
         res.status(500).json({
-            error: "An unexpect server occurred: " + error,
+            error: "An unexpected server occurred: " + error,
         });
     }
 });
@@ -171,7 +171,7 @@ router.patch("/:questionNumber", async (req, res) => {
         res.status(200).json(updatedQuestion);
     } catch (error) {
         res.status(500).json({
-            error: "An unexpect server occurred: " + error,
+            error: "An unexpected server occurred: " + error,
         });
     }
 });
@@ -190,13 +190,13 @@ router.delete("/:id", async (req, res) => {
                 },
             });
         } catch {
-            res.status(400).json({ error: "That account does not exist" });
+            res.status(400).json({ error: "That question does not exist" });
         }
 
-        res.status(200).json({ message: "Account successfully deleted" });
+        res.status(200).json({ message: "Question successfully deleted" });
     } catch (error) {
         res.status(500).json({
-            error: "An unexpect server occurred: " + error,
+            error: "An unexpected server occurred: " + error,
         });
     }
 });
@@ -215,13 +215,13 @@ router.delete("/:questionNumber", async (req, res) => {
                 },
             });
         } catch {
-            res.status(400).json({ error: "That account does not exist" });
+            res.status(400).json({ error: "That question does not exist" });
         }
 
-        res.status(200).json({ message: "Account successfully deleted" });
+        res.status(200).json({ message: "Question successfully deleted" });
     } catch (error) {
         res.status(500).json({
-            error: "An unexpect server occurred: " + error,
+            error: "An unexpected server occurred: " + error,
         });
     }
 });
