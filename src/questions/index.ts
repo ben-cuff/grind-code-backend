@@ -225,6 +225,8 @@ const algorithmPatterns = [
     "mergeIntervals",
     "math",
     "trees",
+    "hashing",
+    "linkedList",
 ];
 
 type AlgorithmPattern = (typeof algorithmPatterns)[number];

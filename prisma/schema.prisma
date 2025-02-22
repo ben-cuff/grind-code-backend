@@ -44,4 +44,6 @@ enum questionPattern {
   mergeIntervals
   math
   trees
+  hashing
+  linkedList
 }
