@@ -71,6 +71,39 @@ router.get("/random-question", async (_req, res) => {
     }
 });
 
+router.get("/next-question", async (req, res) => {
+    try {
+        const currentIndex = req.query.currentIndex;
+
+        const questions = await prisma.question.findMany();
+
+        if (!questions) {
+            res.status(404).json({
+                error: "No questions found",
+            });
+            return;
+        }
+
+        questions.sort((a, b) => a.questionNumber - b.questionNumber);
+
+        const currentIdx = Number(currentIndex);
+        
+        if (isNaN(currentIdx)) {
+            res.status(400).json({ error: "Invalid currentIndex provided" });
+            return;
+        }
+
+        const nextIdx = currentIdx % questions.length;
+        const nextQuestion = questions[nextIdx];
+
+        res.status(200).json(nextQuestion);
+    } catch (error) {
+        res.status(500).json({
+            error: "An unexpected server error occurred: " + error,
+        });
+    }
+});
+
 router.post("/:questionNumber", async (req, res) => {
     try {
         const {
