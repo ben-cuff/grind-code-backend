@@ -4,7 +4,7 @@ import idMessageRouter from "./[id]/index";
 
 const router = express.Router();
 
-import prisma from "@/db";
+import prisma from "../db";
 
 router.get("/", async (req, res) => {
     if (req.query.questionNumber) {
