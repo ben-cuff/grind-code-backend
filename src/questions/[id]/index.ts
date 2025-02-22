@@ -2,7 +2,7 @@ import express from "express";
 
 const router = express.Router();
 
-import prisma from "@/db";
+import prisma from "../../db";
 
 router.get("/:id", async (req, res) => {
     try {
