@@ -1,6 +1,6 @@
 import express from "express";
 
-import idMessageRouter from "@/questions/[id]/index";
+import idMessageRouter from "./[id]/index";
 
 const router = express.Router();
 
