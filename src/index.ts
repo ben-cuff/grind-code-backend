@@ -3,6 +3,7 @@ import "dotenv/config";
 import express from "express";
 import accountsRouter from "./accounts";
 import prisma from "./db";
+import openaiRouter from "./openai";
 import questionsRouter from "./questions";
 
 const app = express();
@@ -17,6 +18,8 @@ app.get("/", (_req, res) => {
 app.use("/accounts", accountsRouter);
 
 app.use("/questions", questionsRouter);
+
+app.use("/openai", openaiRouter);
 
 if (process.env.NODE_ENV !== "production") {
     const port = process.env.PORT || 3000;
