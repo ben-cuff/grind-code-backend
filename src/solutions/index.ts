@@ -14,9 +14,11 @@ router.get("/", async (req, res) => {
         }
 
         try {
-            const solutionContent = await readPythonSolution(
+            let solutionContent = await readPythonSolution(
                 Number(questionNumber)
             );
+
+            solutionContent = "```py\n" + solutionContent + "\n```";
             res.status(200).json({
                 solution: solutionContent,
             });
