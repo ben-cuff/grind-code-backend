@@ -12,6 +12,7 @@ model account {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   email     String   @unique
+  lastLogin DateTime @default(now())
 }
 
 model question {

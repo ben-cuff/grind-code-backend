@@ -54,6 +54,14 @@ router.post("/", ClerkExpressRequireAuth(), async (req, res) => {
                 },
             });
         } catch {
+            await prisma.account.update({
+                where: {
+                    id: userId!,
+                },
+                data: {
+                    lastLogin: new Date(),
+                },
+            });
             res.status(409).json({
                 error: "Account with email or already exists",
             });
