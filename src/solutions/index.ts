@@ -1,5 +1,5 @@
-import { readPythonSolution } from "@/utils/fileReader";
 import { Router } from "express";
+import { readPythonSolution } from "../utils/fileReader";
 
 const router = Router();
 
