@@ -49,7 +49,7 @@ router.post("/", ClerkExpressRequireAuth(), async (req, res) => {
         try {
             newAccount = await prisma.account.create({
                 data: {
-                    id: userId,
+                    id: userId!,
                     email: email ?? "",
                 },
             });
