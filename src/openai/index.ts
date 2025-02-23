@@ -5,7 +5,8 @@ const router = Router();
 
 router.post("/ask-ai", async (req: Request, res: Response) => {
     try {
-        console.log("attempting");
+        if (!apiKeyMiddleware(req, res)) return;
+
         const { message } = req.body;
 
         if (!message) {

@@ -2,6 +2,7 @@ import express from "express";
 
 const router = express.Router();
 
+import { apiKeyMiddleware } from "@/index";
 import prisma from "../../db";
 
 router.get("/:id", async (req, res) => {
@@ -34,6 +35,8 @@ router.get("/:id", async (req, res) => {
 
 router.patch("/:id", async (req, res) => {
     try {
+        if (!apiKeyMiddleware(req, res)) return;
+
         const { id } = req.params;
         const updateData = req.body;
 
@@ -57,6 +60,8 @@ router.patch("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
     try {
+        if (!apiKeyMiddleware(req, res)) return;
+
         const { id } = req.params;
 
         if (!id) {

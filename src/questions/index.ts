@@ -152,6 +152,8 @@ router.post("/:questionNumber", async (req, res) => {
 
 router.patch("/", async (req, res) => {
     try {
+        if (!apiKeyMiddleware(req, res)) return;
+
         const questionNumber = req.query.questionNumber;
         const updateData = req.body;
 
@@ -179,6 +181,8 @@ router.patch("/", async (req, res) => {
 
 router.delete("/", async (req, res) => {
     try {
+        if (!apiKeyMiddleware(req, res)) return;
+
         const questionNumber = req.query.questionNumber;
         if (!questionNumber) {
             res.status(400).json({ error: "Missing questionNumber in query" });
@@ -205,8 +209,10 @@ router.delete("/", async (req, res) => {
     }
 });
 
-router.delete("/delete-all", async (_req, res) => {
+router.delete("/delete-all", async (req, res) => {
     try {
+        if (!apiKeyMiddleware(req, res)) return;
+
         let count;
         try {
             count = (await prisma.question.deleteMany()).count;
