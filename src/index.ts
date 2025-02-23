@@ -16,6 +16,18 @@ app.get("/", (_req, res) => {
     res.send("Hello from the API!");
 });
 
+export const apiKeyMiddleware = (
+    req: express.Request,
+    res: express.Response
+) => {
+    const apiKey = req.headers["x-api-key"];
+    if (!apiKey || apiKey !== process.env.API_KEY) {
+        res.status(401).json({ error: "Invalid API key" });
+        return false;
+    }
+    return true;
+};
+
 app.use("/accounts", accountsRouter);
 
 app.use("/solutions", solutionsRouter);

@@ -18,9 +18,6 @@ model question {
   id             String          @id @default(uuid())
   questionNumber Int             @unique
   name           String
-  urlSolution    String
-  solutionRoute  String
-  urlQuestion    String
   pattern        questionPattern
   prompt         String
   createdAt      DateTime        @default(now())
