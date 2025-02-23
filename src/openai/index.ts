@@ -1,31 +1,7 @@
 import { Request, Response, Router } from "express";
 import OpenAI from "openai";
-import { ChatCompletionChunk } from "openai/resources/index.mjs";
 
 const router = Router();
-
-async function streamOpenAIResponse(
-    response: AsyncIterable<ChatCompletionChunk>,
-    res: Response
-) {
-    res.setHeader("Content-Type", "text/plain; charset=utf-8");
-    res.setHeader("Cache-Control", "no-cache");
-    res.setHeader("Connection", "keep-alive");
-
-    try {
-        for await (const chunk of response) {
-            const content = chunk.choices[0]?.delta?.content || "";
-            if (content) {
-                res.write(content);
-            }
-        }
-    } catch (error) {
-        console.error("Error processing stream:", error);
-        res.write("\n\nError occurred.");
-    } finally {
-        res.end();
-    }
-}
 
 router.post("/ask-ai", async (req: Request, res: Response) => {
     try {
@@ -42,9 +18,8 @@ router.post("/ask-ai", async (req: Request, res: Response) => {
             apiKey: process.env.OPENAI_API_KEY,
         });
 
-        const responseStream = await openai.chat.completions.create({
+        const response = await openai.chat.completions.create({
             model: "o3-mini",
-            stream: true,
             messages: [
                 {
                     content: message,
@@ -53,7 +28,7 @@ router.post("/ask-ai", async (req: Request, res: Response) => {
             ],
         });
 
-        await streamOpenAIResponse(responseStream, res);
+        res.status(200).json({ message: response.choices[0]?.message.content });
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({
