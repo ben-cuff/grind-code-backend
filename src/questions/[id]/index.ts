@@ -2,8 +2,8 @@ import express from "express";
 
 const router = express.Router();
 
-import { apiKeyMiddleware } from "@/index";
 import prisma from "../../db";
+import { apiKeyMiddleware } from "../../index";
 
 router.get("/:id", async (req, res) => {
     try {
