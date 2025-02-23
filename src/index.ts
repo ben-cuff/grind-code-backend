@@ -5,6 +5,7 @@ import accountsRouter from "./accounts";
 import prisma from "./db";
 import openaiRouter from "./openai";
 import questionsRouter from "./questions";
+import solutionsRouter from "./solutions";
 
 const app = express();
 
@@ -16,6 +17,8 @@ app.get("/", (_req, res) => {
 });
 
 app.use("/accounts", accountsRouter);
+
+app.use("/solutions", solutionsRouter);
 
 app.use("/questions", questionsRouter);
 
