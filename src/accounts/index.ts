@@ -1,5 +1,14 @@
+import { clerkClient, ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 import express from "express";
 import { prisma } from "..";
+
+declare global {
+    namespace Express {
+        interface Request {
+            auth?: { userId: string };
+        }
+    }
+}
 
 const router = express.Router();
 
@@ -25,9 +34,13 @@ router.get("/:userId", async (req, res) => {
     }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", ClerkExpressRequireAuth(), async (req, res) => {
     try {
-        const { userId, email } = req.body;
+        const userId = req.auth?.userId;
+
+        const user = await clerkClient.users.getUser(userId || "");
+
+        const email = user.emailAddresses[0]?.emailAddress;
 
         if (!userId || !email) {
             res.status(400).json({ error: "userId and email are required" });
@@ -37,7 +50,7 @@ router.post("/", async (req, res) => {
             newAccount = await prisma.account.create({
                 data: {
                     id: userId,
-                    email,
+                    email: email ?? "",
                 },
             });
         } catch {
