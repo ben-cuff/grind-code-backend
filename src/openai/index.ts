@@ -27,7 +27,7 @@ async function streamOpenAIResponse(
     }
 }
 
-router.post("/openai", async (req: Request, res: Response) => {
+router.post("/ask-ai", async (req: Request, res: Response) => {
     try {
         console.log("attempting");
         const { message } = req.body;
@@ -58,6 +58,7 @@ router.post("/openai", async (req: Request, res: Response) => {
         console.error("Error:", error);
         res.status(500).json({
             error: "Failed to generate response, it is likely that your API key is broken or out of credit",
+            errorMessage: error,
         });
     }
 });
