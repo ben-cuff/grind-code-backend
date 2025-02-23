@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 import OpenAI from "openai";
+import { apiKeyMiddleware } from "..";
 
 const router = Router();
 
