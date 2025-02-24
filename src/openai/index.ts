@@ -92,7 +92,7 @@ router.post("/stream", async (req, res) => {
 
         const userId = req.auth?.userId;
 
-        if (userId) {
+        if (!userId) {
             res.status(401).json({ error: "Missing Auth" });
             return;
         }
