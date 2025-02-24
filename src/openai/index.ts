@@ -86,7 +86,7 @@ router.post(
     }
 );
 
-router.post("/stream", async (req, res) => {
+router.post("/stream",ClerkExpressWithAuth() async (req, res) => {
     try {
         const { messages } = req.body as { messages: Message[] };
 
