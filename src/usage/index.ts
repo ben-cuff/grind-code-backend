@@ -39,6 +39,7 @@ router.post("/", ClerkExpressWithAuth(), async (req, res) => {
 
         if (!userId) {
             res.status(401).json({ error: "Missing Auth" });
+            return;
         }
 
         try {
