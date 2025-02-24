@@ -133,8 +133,7 @@ router.post("/stream", ClerkExpressWithAuth(), async (req, res) => {
 
         res.setHeader("Content-Type", "text/event-stream");
         res.setHeader("Cache-Control", "no-cache");
-        res.setHeader("Transfer-Encoding", "chunked");
-        res.flushHeaders && res.flushHeaders();
+        res.setHeader("Connection", "keep-alive");
 
         for await (const chunk of completion) {
             const content = chunk.choices[0]?.delta?.content;
