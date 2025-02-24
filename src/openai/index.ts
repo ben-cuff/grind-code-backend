@@ -97,8 +97,9 @@ router.post("/stream", ClerkExpressWithAuth(), async (req, res) => {
             messages.push({
                 role: "assistant",
                 content:
-                    "This is the solution to the problem. use it to guide the user and give better feedback. Solution: " +
-                    solution,
+                    "You are the interviewer in a technical interview. This is the solution to the problem. use it to guide the user and give better feedback. Solution: " +
+                    solution +
+                    " Do not every give them the solution to the problem. The user is not required to write any code. DO not give them answers but instead guide them by asking questions like WHat about edge cases? or what about if X was Y?",
             });
         }
 
