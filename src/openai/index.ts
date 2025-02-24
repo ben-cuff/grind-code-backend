@@ -66,6 +66,17 @@ router.post(
             res.status(200).json({
                 message: response.choices[0]?.message.content,
             });
+
+            fetch(`${process.env.BASE_URL}/usage/increment`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: req.headers.authorization || "",
+                },
+                body: JSON.stringify({
+                    type: "askAIUsage",
+                }),
+            });
         } catch (error) {
             console.error("Error:", error);
             res.status(500).json({
