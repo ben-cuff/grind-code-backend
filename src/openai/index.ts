@@ -1,4 +1,4 @@
-import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
+import { ClerkExpressWithAuth } from "@clerk/clerk-sdk-node";
 import { Request, Response, Router } from "express";
 import OpenAI from "openai";
 import prisma from "../db";
@@ -7,7 +7,7 @@ const router = Router();
 
 router.post(
     "/ask-ai",
-    ClerkExpressRequireAuth(),
+    ClerkExpressWithAuth(),
     async (req: Request, res: Response) => {
         try {
             const { message } = req.body;
@@ -23,7 +23,7 @@ router.post(
                 prisma.account.findUnique({
                     where: { id: userId },
                 }),
-                fetch("/usage", {
+                fetch(`${process.env.BASE_URL}/usage`, {
                     method: "GET",
                     headers: {
                         Authorization: req.headers.authorization || "",
