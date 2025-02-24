@@ -6,6 +6,7 @@ import prisma from "./db";
 import openaiRouter from "./openai";
 import questionsRouter from "./questions";
 import solutionsRouter from "./solutions";
+import usageRouter from "./usage";
 
 const app = express();
 
@@ -29,12 +30,10 @@ export const apiKeyMiddleware = (
 };
 
 app.use("/accounts", accountsRouter);
-
 app.use("/solutions", solutionsRouter);
-
 app.use("/questions", questionsRouter);
-
 app.use("/openai", openaiRouter);
+app.use("/usage", usageRouter);
 
 if (process.env.NODE_ENV !== "production") {
     const port = process.env.PORT || 3000;

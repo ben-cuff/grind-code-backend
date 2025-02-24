@@ -1,4 +1,4 @@
-import { clerkClient, ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
+import { clerkClient, ClerkExpressWithAuth } from "@clerk/clerk-sdk-node";
 import express from "express";
 import { prisma } from "..";
 
@@ -24,6 +24,7 @@ router.get("/:userId", async (req, res) => {
             res.status(404).json({
                 error: "A user with that userId was not found",
             });
+            return;
         }
 
         res.status(200).json(user);
@@ -34,9 +35,13 @@ router.get("/:userId", async (req, res) => {
     }
 });
 
-router.post("/", ClerkExpressRequireAuth(), async (req, res) => {
+router.post("/", ClerkExpressWithAuth(), async (req, res) => {
     try {
         const userId = req.auth?.userId;
+
+        if (!userId) {
+            res.status(401).json({ error: "Missing Auth" });
+        }
 
         const user = await clerkClient.users.getUser(userId || "");
 

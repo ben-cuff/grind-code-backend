@@ -1,6 +1,7 @@
 import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 import { Request, Response, Router } from "express";
 import OpenAI from "openai";
+import prisma from "../db";
 
 const router = Router();
 
@@ -10,6 +11,37 @@ router.post(
     async (req: Request, res: Response) => {
         try {
             const { message } = req.body;
+
+            const userId = req.auth?.userId;
+
+            if (!userId) {
+                res.status(401).json({ error: "Missing Auth" });
+                return;
+            }
+
+            const [user, usageResponse] = await Promise.all([
+                prisma.account.findUnique({
+                    where: { id: userId },
+                }),
+                fetch("/usage", {
+                    method: "GET",
+                    headers: {
+                        Authorization: req.headers.authorization || "",
+                    },
+                }),
+            ]);
+
+            if (!user) {
+                res.status(404).json({ error: "User not found" });
+                return;
+            }
+
+            const usage = await usageResponse.json();
+
+            if (!user.premium && usage.askAIUsage > 5) {
+                res.status(402).json({ error: "Usage limit exceeded" });
+                return;
+            }
 
             if (!message) {
                 res.status(400).json({

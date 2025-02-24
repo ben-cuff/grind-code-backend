@@ -9,10 +9,12 @@ generator client {
 
 model account {
   id        String   @id
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
   email     String   @unique
   lastLogin DateTime @default(now())
+  premium   Boolean  @default(false)
+  usage     usage[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model question {
@@ -23,6 +25,18 @@ model question {
   prompt         String
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
+}
+
+model usage {
+  id             String   @id @default(uuid())
+  userId         String   @unique
+  account        account  @relation(fields: [userId], references: [id])
+  askAIUsage     Int      @default(0)
+  askAILast      DateTime @default(now())
+  interviewUsage Int      @default(0)
+  interviewLast  DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 enum questionPattern {
