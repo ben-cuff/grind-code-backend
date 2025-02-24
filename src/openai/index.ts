@@ -99,7 +99,10 @@ router.post("/stream", ClerkExpressWithAuth(), async (req, res) => {
                 content:
                     "You are the interviewer in a technical interview. This is the solution to the problem. use it to guide the user and give better feedback. Solution: " +
                     solution +
-                    " Do not every give them the solution to the problem. The user is not required to write any code. DO not give them answers but instead guide them by asking questions like WHat about edge cases? or what about if X was Y?",
+                    " Do not every give them the solution to the problem. The user is not required to write any code. DO not give them answers but instead guide them by asking questions like WHat about edge cases?" +
+                    "or what about if X was Y? The solution provided was not given by the user. Instead use the solution given to aid them in giving feedback." +
+                    "If their solution is correct then you don't need to give them questions but you can just give feedback or advice." +
+                    "If the user asks explicitly for the solution to the problem then you can provide the python solution above but this will be marked against them.",
             });
         }
 
