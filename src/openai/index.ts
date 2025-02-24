@@ -88,7 +88,19 @@ router.post(
 
 router.post("/stream", ClerkExpressWithAuth(), async (req, res) => {
     try {
-        const { messages } = req.body as { messages: Message[] };
+        const { messages, solution } = req.body as {
+            messages: Message[];
+            solution: string;
+        };
+
+        if (solution) {
+            messages.push({
+                role: "assistant",
+                content:
+                    "This is the solution to the problem. use it to guide the user and give better feedback. Solution: " +
+                    solution,
+            });
+        }
 
         const userId = req.auth?.userId;
 
