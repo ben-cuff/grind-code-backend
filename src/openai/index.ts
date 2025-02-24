@@ -114,12 +114,12 @@ router.post("/stream", ClerkExpressWithAuth(), async (req, res) => {
             return;
         }
 
-        // const usage = await usageResponse.json();
+        const usage = await usageResponse.json();
 
-        // if (!user.premium && usage.interviewUsage > 1) {
-        //     res.status(402).json({ error: "Usage limit exceeded" });
-        //     return;
-        // }
+        if (!user.premium && usage.interviewUsage > 1) {
+            res.status(402).json({ error: "Usage limit exceeded" });
+            return;
+        }
 
         const openai = new OpenAI({
             apiKey: process.env.OPENAI_API_KEY,
@@ -133,6 +133,8 @@ router.post("/stream", ClerkExpressWithAuth(), async (req, res) => {
 
         res.setHeader("Content-Type", "text/event-stream");
         res.setHeader("Cache-Control", "no-cache");
+        res.setHeader("Transfer-Encoding", "chunked");
+        res.flushHeaders && res.flushHeaders();
 
         for await (const chunk of completion) {
             const content = chunk.choices[0]?.delta?.content;
