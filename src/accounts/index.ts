@@ -80,6 +80,32 @@ router.post("/", ClerkExpressWithAuth(), async (req, res) => {
     }
 });
 
+router.patch("/premium", ClerkExpressWithAuth(), async (req, res) => {
+    try {
+        const userId = req.auth?.userId;
+
+        if (!userId) {
+            res.status(401).json({ error: "Missing Auth" });
+            return;
+        }
+
+        const currentAccount = await prisma.account.findUnique({
+            where: { id: userId },
+        });
+
+        const updatedAccount = await prisma.account.update({
+            where: { id: userId },
+            data: { premium: !currentAccount?.premium },
+        });
+
+        res.status(200).json(updatedAccount);
+    } catch (error) {
+        res.status(500).json({
+            error: "An unexpected server error occurred: " + error,
+        });
+    }
+});
+
 router.delete("/:userId", async (req, res) => {
     try {
         const { userId } = req.params;
