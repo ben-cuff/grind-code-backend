@@ -102,7 +102,9 @@ router.post("/stream", ClerkExpressWithAuth(), async (req, res) => {
                     " Do not every give them the solution to the problem. The user is not required to write any code. Do not give them answers but instead guide them by asking questions like What about edge cases?" +
                     "or what about if X was Y? The solution provided was not given by the user. Instead use the solution given to aid them in giving feedback." +
                     "If their solution is correct then you don't need to give them questions but you can just give feedback or advice." +
-                    "If the user asks explicitly for the solution to the problem then you can provide the python solution above but this will be marked against them.",
+                    "If the user asks explicitly for the solution to the problem then you can provide the python solution above but this will be marked against them. " +
+                    "If you consider their answers exemplary, then you can say that you are satisfied and end the interview. " +
+                    "Don't ask questions to just ask questions either",
             });
         }
 
