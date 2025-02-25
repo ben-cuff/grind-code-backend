@@ -224,21 +224,18 @@ router.post("/stream", ClerkExpressWithAuth(), async (req, res) => {
 
 router.post("/feedback", ClerkExpressWithAuth(), async (req, res) => {
     try {
-        const { messages, solution } = req.body as {
+        const { messages } = req.body as {
             messages: Message[];
-            solution: string;
         };
 
-        if (solution) {
-            messages.push({
-                role: "assistant",
-                content:
-                    "You are trying to figure out whether or not you would hire someone based off of the messages that they sent " +
-                    "during their interview. Looking at what they said, the clarifying questions they answered and how close to the solution they were, " +
-                    "rate them strong hire, hire, lean hire, lean no hire, no hire, or strong no hire. Put this as the first thing in your response. " +
-                    "Also give them advice on what they could do better next time",
-            });
-        }
+        messages.push({
+            role: "assistant",
+            content:
+                "You are trying to figure out whether or not you would hire someone based off of the messages that they sent " +
+                "during their interview. Looking at what they said, the clarifying questions they answered and how close to the solution they were, " +
+                "rate them strong hire, hire, lean hire, lean no hire, no hire, or strong no hire. Put this as the first thing in your response. " +
+                "Also give them advice on what they could do better next time",
+        });
 
         const userId = req.auth?.userId;
 
