@@ -144,7 +144,7 @@ router.post("/stream", ClerkExpressWithAuth(), async (req, res) => {
         });
 
         const completion = await openai.chat.completions.create({
-            model: "o3-mini",
+            model: "gpt-4o-mini",
             messages,
         });
 
