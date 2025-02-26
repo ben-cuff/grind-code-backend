@@ -3,6 +3,7 @@ import "dotenv/config";
 import express from "express";
 import accountsRouter from "./accounts";
 import prisma from "./db";
+import interviewRouter from "./interview";
 import openaiRouter from "./openai";
 import questionsRouter from "./questions";
 import solutionsRouter from "./solutions";
@@ -34,6 +35,7 @@ app.use("/solutions", solutionsRouter);
 app.use("/questions", questionsRouter);
 app.use("/openai", openaiRouter);
 app.use("/usage", usageRouter);
+app.use("/interview", interviewRouter);
 
 if (process.env.NODE_ENV !== "production") {
     const port = process.env.PORT || 3000;
