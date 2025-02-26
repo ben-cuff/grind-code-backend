@@ -1,5 +1,14 @@
+import { clerkClient, ClerkExpressWithAuth } from "@clerk/clerk-sdk-node";
 import express from "express";
 import { prisma } from "..";
+
+declare global {
+    namespace Express {
+        interface Request {
+            auth?: { userId: string };
+        }
+    }
+}
 
 const router = express.Router();
 
@@ -15,6 +24,7 @@ router.get("/:userId", async (req, res) => {
             res.status(404).json({
                 error: "A user with that userId was not found",
             });
+            return;
         }
 
         res.status(200).json(user);
@@ -25,9 +35,17 @@ router.get("/:userId", async (req, res) => {
     }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", ClerkExpressWithAuth(), async (req, res) => {
     try {
-        const { userId, email } = req.body;
+        const userId = req.auth?.userId;
+
+        if (!userId) {
+            res.status(401).json({ error: "Missing Auth" });
+        }
+
+        const user = await clerkClient.users.getUser(userId || "");
+
+        const email = user.emailAddresses[0]?.emailAddress;
 
         if (!userId || !email) {
             res.status(400).json({ error: "userId and email are required" });
@@ -36,11 +54,19 @@ router.post("/", async (req, res) => {
         try {
             newAccount = await prisma.account.create({
                 data: {
-                    id: userId,
-                    email,
+                    id: userId!,
+                    email: email ?? "",
                 },
             });
         } catch {
+            await prisma.account.update({
+                where: {
+                    id: userId!,
+                },
+                data: {
+                    lastLogin: new Date(),
+                },
+            });
             res.status(409).json({
                 error: "Account with email or already exists",
             });
@@ -50,6 +76,32 @@ router.post("/", async (req, res) => {
     } catch (error) {
         res.status(500).json({
             error: "A unexpected server error occurred: " + error,
+        });
+    }
+});
+
+router.patch("/premium", ClerkExpressWithAuth(), async (req, res) => {
+    try {
+        const userId = req.auth?.userId;
+
+        if (!userId) {
+            res.status(401).json({ error: "Missing Auth" });
+            return;
+        }
+
+        const currentAccount = await prisma.account.findUnique({
+            where: { id: userId },
+        });
+
+        const updatedAccount = await prisma.account.update({
+            where: { id: userId },
+            data: { premium: !currentAccount?.premium },
+        });
+
+        res.status(200).json(updatedAccount);
+    } catch (error) {
+        res.status(500).json({
+            error: "An unexpected server error occurred: " + error,
         });
     }
 });
