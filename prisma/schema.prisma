@@ -73,4 +73,5 @@ enum questionPattern {
   trees
   hashing
   linkedList
+  divideAndConquer
 }

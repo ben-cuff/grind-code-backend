@@ -251,6 +251,7 @@ const algorithmPatterns = [
     "trees",
     "hashing",
     "linkedList",
+    "divideAndConquer",
 ];
 
 type AlgorithmPattern = (typeof algorithmPatterns)[number];

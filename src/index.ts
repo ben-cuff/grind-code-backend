@@ -23,7 +23,7 @@ export const apiKeyMiddleware = (
     res: express.Response
 ) => {
     const apiKey = req.headers["x-api-key"];
-    if (!apiKey || apiKey !== process.env.API_KEY) {
+    if (!apiKey || apiKey !== process.env.X_API_KEY) {
         res.status(401).json({ error: "Invalid API key" });
         return false;
     }

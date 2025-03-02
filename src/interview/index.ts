@@ -127,16 +127,20 @@ router.post("/:interviewId", ClerkExpressWithAuth(), async (req, res) => {
 
         res.status(201).json(newInterview);
 
-        fetch(`${process.env.BASE_URL}/usage/increment`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: req.headers.authorization || "",
-            },
-            body: JSON.stringify({
-                type: "interviewUsage",
-            }),
-        });
+        try {
+            fetch(`${process.env.BASE_URL}/usage/increment`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: req.headers.authorization || "",
+                },
+                body: JSON.stringify({
+                    type: "interviewUsage",
+                }),
+            });
+        } catch {
+            return;
+        }
     } catch (error) {
         res.status(500).json({
             error: "An unspecified server error occurred: " + error,
