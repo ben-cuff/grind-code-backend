@@ -115,30 +115,6 @@ router.post("/stream", ClerkExpressWithAuth(), async (req, res) => {
             return;
         }
 
-        const [user, usageResponse] = await Promise.all([
-            prisma.account.findUnique({
-                where: { id: userId },
-            }),
-            fetch(`${process.env.BASE_URL}/usage`, {
-                method: "GET",
-                headers: {
-                    Authorization: req.headers.authorization || "",
-                },
-            }),
-        ]);
-
-        if (!user) {
-            res.status(404).json({ error: "User not found" });
-            return;
-        }
-
-        const usage = await usageResponse.json();
-
-        if (!user.premium && usage.interviewUsage > 1) {
-            res.status(402).json({ error: "Usage limit exceeded" });
-            return;
-        }
-
         const openai = new OpenAI({
             apiKey: process.env.OPENAI_API_KEY,
         });

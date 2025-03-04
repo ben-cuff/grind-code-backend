@@ -8,13 +8,14 @@ generator client {
 }
 
 model account {
-  id        String   @id
-  email     String   @unique
-  lastLogin DateTime @default(now())
-  premium   Boolean  @default(false)
+  id        String      @id
+  email     String      @unique
+  lastLogin DateTime    @default(now())
+  premium   Boolean     @default(false)
   usage     usage[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  interview interview[]
 }
 
 model question {
@@ -25,6 +26,7 @@ model question {
   prompt         String
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
+  interview      interview[]
 }
 
 model usage {
@@ -37,6 +39,19 @@ model usage {
   interviewLast  DateTime @default(now())
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+}
+
+model interview {
+  id             String   @id
+  userId         String
+  account        account  @relation(fields: [userId], references: [id])
+  messages       Json
+  questionNumber Int
+  question       question @relation(fields: [questionNumber], references: [questionNumber])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  feedback       String?
+  completed      Boolean  @default(false)
 }
 
 enum questionPattern {
@@ -58,4 +73,5 @@ enum questionPattern {
   trees
   hashing
   linkedList
+  divideAndConquer
 }

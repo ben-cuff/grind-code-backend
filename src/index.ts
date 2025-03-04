@@ -3,6 +3,7 @@ import "dotenv/config";
 import express from "express";
 import accountsRouter from "./accounts";
 import prisma from "./db";
+import interviewRouter from "./interview";
 import openaiRouter from "./openai";
 import questionsRouter from "./questions";
 import solutionsRouter from "./solutions";
@@ -22,7 +23,7 @@ export const apiKeyMiddleware = (
     res: express.Response
 ) => {
     const apiKey = req.headers["x-api-key"];
-    if (!apiKey || apiKey !== process.env.API_KEY) {
+    if (!apiKey || apiKey !== process.env.X_API_KEY) {
         res.status(401).json({ error: "Invalid API key" });
         return false;
     }
@@ -34,6 +35,7 @@ app.use("/solutions", solutionsRouter);
 app.use("/questions", questionsRouter);
 app.use("/openai", openaiRouter);
 app.use("/usage", usageRouter);
+app.use("/interview", interviewRouter);
 
 if (process.env.NODE_ENV !== "production") {
     const port = process.env.PORT || 3000;
