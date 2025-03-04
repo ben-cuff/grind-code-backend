@@ -32,6 +32,42 @@ router.get("/", async (req, res) => {
                 error: "An unexpected server error occurred: " + error,
             });
         }
+    } else if (req.query.pattern) {
+        let pattern = req.query.pattern;
+        if (!pattern) {
+            res.status(400).json({
+                error: "Missing pattern in query",
+            });
+            return;
+        }
+
+        if (!allowedPatterns.has(pattern as AlgorithmPattern)) {
+            res.status(400).json({
+                error: "Invalid algorithm pattern provided",
+            });
+            return;
+        }
+
+        try {
+            const questions = await prisma.question.findMany({
+                where: {
+                    pattern: pattern as any,
+                },
+            });
+
+            if (!questions) {
+                res.status(404).json({
+                    error: "Questions with that pattern do not exist",
+                });
+                return;
+            }
+
+            res.status(200).json(questions);
+        } catch (error) {
+            res.status(500).json({
+                error: "An unexpected server error occurred: " + error,
+            });
+        }
     } else {
         try {
             const questions = await prisma.question.findMany();
