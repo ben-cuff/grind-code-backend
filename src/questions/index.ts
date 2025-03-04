@@ -86,11 +86,26 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.get("/random-question", async (_req, res) => {
+router.get("/random-question", async (req, res) => {
     try {
-        const questions = await prisma.question.findMany();
+        let query = {};
 
-        if (!questions) {
+        if (req.query.pattern) {
+            const pattern = req.query.pattern;
+
+            if (!allowedPatterns.has(pattern as AlgorithmPattern)) {
+                res.status(400).json({
+                    error: "Invalid algorithm pattern provided",
+                });
+                return;
+            }
+
+            query = { where: { pattern: pattern as any } };
+        }
+
+        const questions = await prisma.question.findMany(query);
+
+        if (!questions || questions.length === 0) {
             res.status(404).json({
                 error: "No questions found",
             });
