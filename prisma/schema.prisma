@@ -16,6 +16,7 @@ model account {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   interview interview[]
+  activity  activity[]
 }
 
 model question {
@@ -48,10 +49,21 @@ model interview {
   messages       Json
   questionNumber Int
   question       question @relation(fields: [questionNumber], references: [questionNumber])
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
   feedback       String?
   completed      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model activity {
+  id             String   @id @default(uuid())
+  userId         String
+  account        account  @relation(fields: [userId], references: [id])
+  date           DateTime @db.Date
+  interviewCount Int      @default(0)
+  practiceCount  Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 enum questionPattern {
